@@ -50,4 +50,108 @@ interface IJooby is IERC20Metadata {
     event PercentageOfSalesCommissionWasUpdated(uint256 indexed newPercentageOfSalesCommission);
     event BurnProtectedAccountAdded(address indexed account);
     event BurnProtectedAccountRemoved(address indexed account);
+
+    /// @notice Enables trading.
+    function enableTrading() external;
+
+    /// @notice Transfers the accumulated commission on the contract to the commission recipient.
+    function withdrawAccumulatedCommission() external;
+
+    /// @notice Nullifies the blocklisted account.
+    /// @param account Account address.
+    function nullifyBlocklistedAccount(address account) external;
+
+    /// @notice Creates `amount_` tokens and assigns them to `account`, increasing the total supply.
+    /// @param account Token receiver.
+    /// @param amount Amount ot tokens to mint.
+    function mint(address account, uint256 amount) external;
+
+    /// @notice Destroys the certain percentage of the total supply.
+    /// @param percentage Percentage of the total supply to destroy.
+    function burn(uint256 percentage) external;
+
+    /// @notice Adds `accounts_` to the liquidity pools set.
+    /// @param accounts Account addresses.
+    function addLiquidityPools(address[] calldata accounts) external;
+
+    /// @notice Removes `accounts_` from the liquidity pools set.
+    /// @param accounts Account addresses.
+    function removeLiquidityPools(address[] calldata accounts) external;
+
+    /// @notice Adds `accounts_` to the whitelisted accounts set.
+    /// @param accounts Account addresses.
+    function addWhitelistedAccounts(address[] calldata accounts) external;
+
+    /// @notice Removes `accounts_` from the whitelisted accounts set.
+    /// @param accounts Account addresses.
+    function removeWhitelistedAccounts(address[] calldata accounts) external;
+
+    /// @notice Adds `accounts_` to the blocklisted accounts set.
+    /// @param accounts Account addresses.
+    function addBlocklistedAccounts(address[] calldata accounts) external;
+
+    /// @notice Removes `accounts_` from the blocklisted accounts set.
+    /// @param accounts Account addresses.
+    function removeBlocklistedAccounts(address[] calldata accounts) external;
+
+    /// @notice Adds `accounts_` to the commission exempt accounts set.
+    /// @param accounts Account addresses.
+    function addCommissionExemptAccounts(address[] calldata accounts) external;
+
+    /// @notice Removes `accounts_` from the commission exempt accounts set.
+    /// @param accounts Account addresses.
+    function removeCommissionExemptAccounts(address[] calldata accounts) external;
+
+    /// @notice Adds `account` to the burn-protected accounts set.
+    /// @param account Account address.
+    function addBurnProtectedAccount(address account) external;
+
+    /// @notice Removes `account` from the burn-protected accounts set.
+    /// @param account Account address.
+    function removeBurnProtectedAccount(address account) external;
+
+    /// @notice Updates the purchase protection period.
+    /// @param purchaseProtectionPeriod New purchase protection period value in seconds.
+    function updatePurchaseProtectionPeriod(uint256 purchaseProtectionPeriod) external;
+
+    /// @notice Updates the sale protection period.
+    /// @param saleProtectionPeriod New sale protection period value in seconds.
+    function updateSaleProtectionPeriod(uint256 saleProtectionPeriod) external;
+
+    /// @notice Updates the commission recipient.
+    /// @param commissionRecipient New commission recipient address.
+    function updateCommissionRecipient(address commissionRecipient) external;
+
+    /// @notice Updates the maximum purchase amount during protection period.
+    /// @param maximumPurchaseAmountDuringProtectionPeriod New maximum purchase amount during protection period value.
+    function updateMaximumPurchaseAmountDuringProtectionPeriod(uint256 maximumPurchaseAmountDuringProtectionPeriod) external;
+
+    /// @notice Updates the percentage of sales commission.
+    /// @param percentageOfSalesCommission New percentage of sales commission value.
+    function updatePercentageOfSalesCommission(uint256 percentageOfSalesCommission) external;
+
+    /// @notice Checks if `account` is in the liquidity pools set.
+    /// @param account Account address.
+    /// @return Boolean value indicating whether the `account` is in the liquidity pools set.
+    function isLiquidityPool(address account) external view returns (bool);
+
+    /// @notice Checks if `account` is in the whitelisted accounts set.
+    /// @param account Account address.
+    /// @return Boolean value indicating whether `account` is in the whitelisted accounts set.
+    function isWhitelistedAccount(address account) external view returns (bool);
+
+    /// @notice Checks if `account` is in the blocklisted accounts set.
+    /// @param account Account address.
+    /// @return Boolean value indicating whether `account` is in the blocklisted accounts set.
+    function isBlocklistedAccount(address account) external view returns (bool);
+
+    /// @notice Checks if `account` is in the commission exempt accounts set.
+    /// @param account Account address.
+    /// @return Boolean value indicating whether `account` is in the commission exempt accounts set.
+    function isCommissionExemptAccount(address account) external view returns (bool);
+
+    /// @notice Checks if `account` is in the burn-protected accounts set.
+    /// @param account Account address.
+    /// @return Boolean value indicating whether `account` is in the burn-protected accounts set.
+    function isBurnProtectedAccount(address account) external view returns (bool);
 }

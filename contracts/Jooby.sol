@@ -52,8 +52,7 @@ contract Jooby is IJooby, AccessControl {
         _grantRole(LIQUIDITY_PROVIDER_ROLE, liquidityProvider_);
     }
 
-    /// @notice Enables trading.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
+    /// @inheritdoc IJooby
     function enableTrading() external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_totalSupply != MAXIMUM_SUPPLY) {
             revert MaximumSupplyWasNotMinted();
@@ -72,8 +71,7 @@ contract Jooby is IJooby, AccessControl {
         emit TradingEnabled(block.timestamp);
     }
 
-    /// @notice Transfers the accumulated commission on the contract to the commission recipient.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
+    /// @inheritdoc IJooby
     function withdrawAccumulatedCommission() external onlyRole(DEFAULT_ADMIN_ROLE) {
         uint256 commissionAmount = _balances[address(this)];
         if (commissionAmount > 0) {
@@ -82,9 +80,7 @@ contract Jooby is IJooby, AccessControl {
         }
     }
 
-    /// @notice Nullifies the blocklisted account.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param account_ Account address.
+    /// @inheritdoc IJooby
     function nullifyBlocklistedAccount(address account_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (account_ == address(0)) {
             revert ZeroAddressEntry();
@@ -98,10 +94,7 @@ contract Jooby is IJooby, AccessControl {
         emit BlocklistedAccountWasNullified(account_, amount);
     }
 
-    /// @notice Creates `amount_` tokens and assigns them to `account_`, increasing the total supply.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param account_ Token receiver.
-    /// @param amount_ Amount ot tokens to mint.
+    /// @inheritdoc IJooby
     function mint(address account_, uint256 amount_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (account_ == address(0)) {
             revert ZeroAddressEntry();
@@ -119,9 +112,7 @@ contract Jooby is IJooby, AccessControl {
         emit Transfer(address(0), account_, amount_);
     }
 
-    /// @notice Destroys `percentage_` of total supply.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param percentage_ Percentage of total supply to destroy.
+    /// @inheritdoc IJooby
     function burn(uint256 percentage_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (!isTradingEnabled) {
             revert ForbiddenToBurnTokens();
@@ -139,9 +130,7 @@ contract Jooby is IJooby, AccessControl {
         emit Transfer(address(0), address(0), currentTotalSupply - _totalSupply);
     }
 
-    /// @notice Adds `accounts_` to the liquidity pools set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param accounts_ Account addresses.
+    /// @inheritdoc IJooby
     function addLiquidityPools(address[] calldata accounts_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < accounts_.length; i++) {
             if (!_liquidityPools.add(accounts_[i])) {
@@ -151,9 +140,7 @@ contract Jooby is IJooby, AccessControl {
         emit LiquidityPoolsAdded(accounts_);
     }
 
-    /// @notice Removes `accounts_` from the liquidity pools set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param accounts_ Account addresses.
+    /// @inheritdoc IJooby
     function removeLiquidityPools(address[] calldata accounts_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < accounts_.length; i++) {
             if (!_liquidityPools.remove(accounts_[i])) {
@@ -163,9 +150,7 @@ contract Jooby is IJooby, AccessControl {
         emit LiquidityPoolsRemoved(accounts_);
     }
 
-    /// @notice Adds `accounts_` to the whitelisted accounts set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param accounts_ Account addresses.
+    /// @inheritdoc IJooby
     function addWhitelistedAccounts(address[] calldata accounts_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < accounts_.length; i++) {
             if (!_whitelistedAccounts.add(accounts_[i])) {
@@ -175,9 +160,7 @@ contract Jooby is IJooby, AccessControl {
         emit WhitelistedAccountsAdded(accounts_);
     }
 
-    /// @notice Removes `accounts_` from the whitelisted accounts set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param accounts_ Account addresses.
+    /// @inheritdoc IJooby
     function removeWhitelistedAccounts(address[] calldata accounts_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < accounts_.length; i++) {
             if (!_whitelistedAccounts.remove(accounts_[i])) {
@@ -187,9 +170,7 @@ contract Jooby is IJooby, AccessControl {
         emit WhitelistedAccountsRemoved(accounts_);
     }
 
-    /// @notice Adds `accounts_` to the blocklisted accounts set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param accounts_ Account addresses.
+    /// @inheritdoc IJooby
     function addBlocklistedAccounts(address[] calldata accounts_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < accounts_.length; i++) {
             if (!_blocklistedAccounts.add(accounts_[i])) {
@@ -199,9 +180,7 @@ contract Jooby is IJooby, AccessControl {
         emit BlocklistedAccountsAdded(accounts_);
     }
 
-    /// @notice Removes `accounts_` from the blocklisted accounts set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param accounts_ Account addresses.
+    /// @inheritdoc IJooby
     function removeBlocklistedAccounts(address[] calldata accounts_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < accounts_.length; i++) {
             if (!_blocklistedAccounts.remove(accounts_[i])) {
@@ -211,9 +190,7 @@ contract Jooby is IJooby, AccessControl {
         emit BlocklistedAccountsRemoved(accounts_);
     }
 
-    /// @notice Adds `accounts_` to the commission exempt accounts set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param accounts_ Account addresses.
+    /// @inheritdoc IJooby
     function addCommissionExemptAccounts(address[] calldata accounts_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < accounts_.length; i++) {
             if (!_commissionExemptAccounts.add(accounts_[i])) {
@@ -223,9 +200,7 @@ contract Jooby is IJooby, AccessControl {
         emit CommissionExemptAccountsAdded(accounts_);
     }
 
-    /// @notice Removes `accounts_` from the commission exempt accounts set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param accounts_ Account addresses.
+    /// @inheritdoc IJooby
     function removeCommissionExemptAccounts(address[] calldata accounts_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < accounts_.length; i++) {
             if (!_commissionExemptAccounts.remove(accounts_[i])) {
@@ -235,9 +210,7 @@ contract Jooby is IJooby, AccessControl {
         emit CommissionExemptAccountsRemoved(accounts_);
     }
 
-    /// @notice Updates the purchase protection period.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param purchaseProtectionPeriod_ New purchase protection period value in seconds.
+    /// @inheritdoc IJooby
     function updatePurchaseProtectionPeriod(uint256 purchaseProtectionPeriod_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (isTradingEnabled) {
             revert ForbiddenToUpdatePurchaseProtectionPeriod();
@@ -246,9 +219,7 @@ contract Jooby is IJooby, AccessControl {
         emit PurchaseProtectionPeriodWasUpdated(purchaseProtectionPeriod_);
     }
 
-    /// @notice Updates the sale protection period.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param saleProtectionPeriod_ New sale protection period value in seconds.
+    /// @inheritdoc IJooby
     function updateSaleProtectionPeriod(uint256 saleProtectionPeriod_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (isTradingEnabled) {
             revert ForbiddenToUpdateSaleProtectionPeriod();
@@ -257,9 +228,7 @@ contract Jooby is IJooby, AccessControl {
         emit SaleProtectionPeriodWasUpdated(saleProtectionPeriod_);
     }
 
-    /// @notice Updates the commission recipient.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param commissionRecipient_ New commission recipient address.
+    /// @inheritdoc IJooby
     function updateCommissionRecipient(address commissionRecipient_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         address currentCommissionRecipient = commissionRecipient;
         if (currentCommissionRecipient == commissionRecipient_ || commissionRecipient_ == address(0)) {
@@ -271,9 +240,7 @@ contract Jooby is IJooby, AccessControl {
         emit CommissionRecipientWasUpdated(commissionRecipient_);
     }
 
-    /// @notice Updates the maximum purchase amount during protection period.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param maximumPurchaseAmountDuringProtectionPeriod_ New maximum purchase amount during protection period value.
+    /// @inheritdoc IJooby
     function updateMaximumPurchaseAmountDuringProtectionPeriod(
         uint256 maximumPurchaseAmountDuringProtectionPeriod_
     ) 
@@ -287,9 +254,7 @@ contract Jooby is IJooby, AccessControl {
         emit MaximumPurchaseAmountDuringProtectionPeriodWasUpdated(maximumPurchaseAmountDuringProtectionPeriod_);
     }
 
-    /// @notice Updates the percentage of sales commission.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param percentageOfSalesCommission_ New percentage of sales commission value.
+    /// @inheritdoc IJooby
     function updatePercentageOfSalesCommission(uint256 percentageOfSalesCommission_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (percentageOfSalesCommission_ > MAXIMUM_PERCENTAGE_OF_SALES_COMMISSION) {
             revert MaximumPercentageOfSalesCommissionWasExceeded();
@@ -298,10 +263,7 @@ contract Jooby is IJooby, AccessControl {
         emit PercentageOfSalesCommissionWasUpdated(percentageOfSalesCommission_);
     }
 
-    /// @notice Sets `amount_` as the allowance of `spender_` over the caller's tokens.
-    /// @param spender_ Token spender address.
-    /// @param amount_ Amount of tokens to approve.
-    /// @return Boolean value indicating whether the operation succeeded.
+    /// @inheritdoc IERC20
     function approve(address spender_, uint256 amount_) external override returns (bool) {
         if (msg.sender == address(0) || spender_ == address(0)) {
             revert ZeroAddressEntry();
@@ -311,99 +273,70 @@ contract Jooby is IJooby, AccessControl {
         return true;
     }
 
-    /// @notice Moves `amount_` tokens from the caller's account to `to_`.
-    /// @param to_ Token receiver.
-    /// @param amount_ Amount of tokens to transfer.
-    /// @return Boolean value indicating whether the operation succeeded.
+    /// @inheritdoc IERC20
     function transfer(address to_, uint256 amount_) external override returns (bool) {
         _transfer(msg.sender, to_, amount_);
         return true;
     }
     
-    /// @notice Moves `amount_` tokens from `from_` to `to_` using the
-    /// allowance mechanism, `amount_` is then deducted from the caller's allowance.
-    /// @param from_ Token sender.
-    /// @param to_ Token receiver.
-    /// @param amount_ Amount of tokens to transfer.
-    /// @return Boolean value indicating whether the operation succeeded.
+    /// @inheritdoc IERC20
     function transferFrom(address from_, address to_, uint256 amount_) external override returns (bool) {
         _allowances[from_][msg.sender] -= amount_;
         _transfer(from_, to_, amount_);
         return true;
     }
 
-    /// @notice Retrieves the name of the token.
-    /// @return Name of the token.
-    function name() external view override returns (string memory) {
-        return _name;
-    }
-    
-    /// @notice Retrieves the symbol of the token, usually a shorter version of the name.
-    /// @return Symbol of the token.
-    function symbol() external view override returns (string memory) {
-        return _symbol;
-    }
-
-    /// @notice Retrieves the number of decimals utilized to get its human-readable representation.
-    /// @return Number of decimals used to get its user representation.
-    function decimals() external pure override returns (uint8) {
-        return 18;
-    }
-
-    /// @notice Retrieves the amount of tokens in existence.
-    /// @return Amount of tokens in existence.
-    function totalSupply() external view override returns (uint256) {
-        return _totalSupply;
-    }
-
-    /// @notice Retrieves the remaining number of tokens that `spender_` will be
-    /// allowed to spend on behalf of `owner_` through `transferFrom()` function. This is zero by default.
-    /// @param owner_ Token owner address.
-    /// @param spender_ Token spender address.
-    /// @return Remaining number of tokens that `spender_` will be
-    /// allowed to spend on behalf of `owner_` through `transferFrom()` function.
-    function allowance(address owner_, address spender_) external view override returns (uint256) {
-        return _allowances[owner_][spender_];
-    }
-
-    /// @notice Checks if `account_` is in the liquidity pools set.
-    /// @param account_ Account address.
-    /// @return Boolean value indicating whether the `account_` is in the liquidity pools set.
+    /// @inheritdoc IJooby
     function isLiquidityPool(address account_) external view returns (bool) {
         return _liquidityPools.contains(account_);
     }
 
-    /// @notice Checks if `account_` is in the whitelisted accounts set.
-    /// @param account_ Account address.
-    /// @return Boolean value indicating whether `account_` is in the whitelisted accounts set.
+    /// @inheritdoc IJooby
     function isWhitelistedAccount(address account_) external view returns (bool) {
         return _whitelistedAccounts.contains(account_);
     }
 
-    /// @notice Checks if `account_` is in the blocklisted accounts set.
-    /// @param account_ Account address.
-    /// @return Boolean value indicating whether `account_` is in the blocklisted accounts set.
+    /// @inheritdoc IJooby
     function isBlocklistedAccount(address account_) external view returns (bool) {
         return _blocklistedAccounts.contains(account_);
     }
 
-    /// @notice Checks if `account_` is in the commission exempt accounts set.
-    /// @param account_ Account address.
-    /// @return Boolean value indicating whether `account_` is in the commission exempt accounts set.
+    /// @inheritdoc IJooby
     function isCommissionExemptAccount(address account_) external view returns (bool) {
         return _commissionExemptAccounts.contains(account_);
     }
 
-    /// @notice Checks if `account_` is in the burn-protected accounts set.
-    /// @param account_ Account address.
-    /// @return Boolean value indicating whether `account_` is in the burn-protected accounts set.
+    /// @inheritdoc IJooby
     function isBurnProtectedAccount(address account_) external view returns (bool) {
         return _burnProtectedAccounts.contains(account_);
     }
 
-    /// @notice Adds `account_` to the burn-protected accounts set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param account_ Account address.
+    /// @inheritdoc IERC20
+    function totalSupply() external view override returns (uint256) {
+        return _totalSupply;
+    }
+
+    /// @inheritdoc IERC20
+    function allowance(address owner_, address spender_) external view override returns (uint256) {
+        return _allowances[owner_][spender_];
+    }
+
+    /// @inheritdoc IERC20Metadata
+    function name() external view override returns (string memory) {
+        return _name;
+    }
+    
+    /// @inheritdoc IERC20Metadata
+    function symbol() external view override returns (string memory) {
+        return _symbol;
+    }
+
+    /// @inheritdoc IERC20Metadata
+    function decimals() external pure override returns (uint8) {
+        return 18;
+    }
+
+    /// @inheritdoc IJooby
     function addBurnProtectedAccount(address account_) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (!_burnProtectedAccounts.add(account_)) {
             revert AlreadyInBurnProtectedAccountsSet();
@@ -412,9 +345,7 @@ contract Jooby is IJooby, AccessControl {
         emit BurnProtectedAccountAdded(account_);
     }
 
-    /// @notice Removes `account_` from the burn-protected accounts set.
-    /// @dev Could be called only by the DEFAULT_ADMIN_ROLE.
-    /// @param account_ Account address.
+    /// @inheritdoc IJooby
     function removeBurnProtectedAccount(address account_) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (!_burnProtectedAccounts.remove(account_)) {
             revert NotFoundInBurnProtectedAccountsSet();
@@ -423,9 +354,7 @@ contract Jooby is IJooby, AccessControl {
         emit BurnProtectedAccountRemoved(account_);
     }
 
-    /// @notice Retrieves the amount of tokens owned by `account_`.
-    /// @param account_ Account address.
-    /// @return Amount of tokens owned by `account_`.
+    /// @inheritdoc IERC20
     function balanceOf(address account_) public view override returns (uint256) {
         if (_burnProtectedAccounts.contains(account_)) {
             return _balances[account_];
@@ -434,7 +363,7 @@ contract Jooby is IJooby, AccessControl {
         }
     }
 
-    /// @notice Moves `amount_` of tokens from `from_` to `to_`. 
+    /// @notice Moves `amount_` tokens from `from_` to `to_`. 
     /// @param from_ Token sender.
     /// @param to_ Token receiver.
     /// @param amount_ Amount of tokens to transfer.
