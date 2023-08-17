@@ -72,7 +72,7 @@ describe("Jooby", () => {
         await jooby.mint(owner.address, MAXIMUM_JOOBY_TOKEN_SUPPLY);
         expect(await jooby.balanceOf(owner.address)).to.equal(MAXIMUM_JOOBY_TOKEN_SUPPLY);
         // Attempt to mint more than MAXIMUM_SUPPLY
-        await expect(jooby.mint(owner.address, MAXIMUM_JOOBY_TOKEN_SUPPLY)).to.be.revertedWith("MaximumSupplyWasExceeded");
+        await expect(jooby.mint(owner.address, MAXIMUM_JOOBY_TOKEN_SUPPLY)).to.be.revertedWith("MaximumSupplyExceeded");
         // Enable trading
         await jooby.addLiquidityPools([liquidityPool.address]);
         await jooby.addWhitelistedAccounts([bob.address]);
@@ -98,7 +98,7 @@ describe("Jooby", () => {
         await jooby.addWhitelistedAccounts([bob.address]);
         await jooby.enableTrading();
         // Attempt to burn more than 4% of TS
-        await expect(jooby.burn(500)).to.be.revertedWith("MaximumBurnPercentageWasExceeded");
+        await expect(jooby.burn(500)).to.be.revertedWith("MaximumBurnPercentageExceeded");
         // Successful burn 1% of TS
         await jooby.burn(100);
         const onePercentage = MAXIMUM_JOOBY_TOKEN_SUPPLY.mul(1).div(100);
@@ -273,7 +273,7 @@ describe("Jooby", () => {
         await expect(jooby.connect(liquidityProvider).updatePercentageOfSalesCommission(100))
             .to.be.revertedWith(`AccessControl: account ${(liquidityProvider.address).toLowerCase()} is missing role ${ADMIN_ROLE}`);
         // Attempt to update more than 4%
-        await expect(jooby.updatePercentageOfSalesCommission(500)).to.be.revertedWith("MaximumPercentageOfSalesCommissionWasExceeded");
+        await expect(jooby.updatePercentageOfSalesCommission(500)).to.be.revertedWith("MaximumPercentageOfSalesCommissionExceeded");
         // Successful updating
         await jooby.updatePercentageOfSalesCommission(100);
         expect(await jooby.percentageOfSalesCommission()).to.equal(100);
@@ -284,7 +284,7 @@ describe("Jooby", () => {
         await expect(jooby.connect(liquidityProvider).enableTrading())
             .to.be.revertedWith(`AccessControl: account ${(liquidityProvider.address).toLowerCase()} is missing role ${ADMIN_ROLE}`);
         // Attempt to enable trading when totalSupply != MAXIMUM_SUPPLY
-        await expect(jooby.enableTrading()).to.be.revertedWith("MaximumSupplyWasNotMinted");
+        await expect(jooby.enableTrading()).to.be.revertedWith("MaximumSupplyNotMinted");
         // Mint MAXIMUM_SUPPLY
         await jooby.mint(owner.address, MAXIMUM_JOOBY_TOKEN_SUPPLY);
         // Attempt to enable without liquidity pool setting
@@ -298,7 +298,7 @@ describe("Jooby", () => {
         await jooby.enableTrading();
         expect(await jooby.isTradingEnabled()).to.equal(true);
         // Attempt to enable trading again
-        await expect(jooby.enableTrading()).to.be.revertedWith("TradingWasAlreadyEnabled");
+        await expect(jooby.enableTrading()).to.be.revertedWith("TradingAlreadyEnabled");
     });
 
     it("Successful purchase restriction logic", async () => {
@@ -397,7 +397,7 @@ describe("Jooby", () => {
         // Check allowance
         await jooby.approve(alice.address, ONE_ETHER);
         expect(await jooby.allowance(owner.address, alice.address)).to.equal(ONE_ETHER);
-        // Sniping (it wasn't 30 min after trading was enabled
+        // Sniping (it n't 30 min after trading  enabled
         await expect(jooby.connect(alice).transferFrom(liquidityPool.address, alice.address, 0)).to.be.revertedWith("ForbiddenToTransferTokens");
         // Add alice to blocklist
         await jooby.addBlocklistedAccounts([alice.address]);

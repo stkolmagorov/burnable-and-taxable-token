@@ -29,7 +29,7 @@ contract Jooby is IJooby, AccessControl {
     string private _symbol;
     bool public isTradingEnabled;
 
-    mapping(address => bool) public isPurchaseWasMadeDuringProtectionPeriodByAccount;
+    mapping(address => bool) public isPurchaseMadeDuringProtectionPeriodByAccount;
     mapping(address => uint256) public availableAmountToPurchaseDuringProtectionPeriodByAccount;
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
@@ -55,7 +55,7 @@ contract Jooby is IJooby, AccessControl {
     /// @inheritdoc IJooby
     function enableTrading() external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_totalSupply != MAXIMUM_SUPPLY) {
-            revert MaximumSupplyWasNotMinted();
+            revert MaximumSupplyNotMinted();
         }
         if (_liquidityPools.length() == 0) {
             revert EmptySetOfLiquidityPools();
@@ -64,7 +64,7 @@ contract Jooby is IJooby, AccessControl {
             revert EmptySetOfWhitelistedAccounts();
         }
         if (isTradingEnabled) {
-            revert TradingWasAlreadyEnabled();
+            revert TradingAlreadyEnabled();
         }
         isTradingEnabled = true;
         tradingEnabledTimestamp = block.timestamp;
@@ -76,7 +76,7 @@ contract Jooby is IJooby, AccessControl {
         uint256 commissionAmount = _balances[address(this)];
         if (commissionAmount > 0) {
             _transfer(address(this), commissionRecipient, commissionAmount);
-            emit AccumulatedCommissionWasWithdrawn(commissionAmount);
+            emit AccumulatedCommissionWithdrawn(commissionAmount);
         }
     }
 
@@ -91,7 +91,7 @@ contract Jooby is IJooby, AccessControl {
         uint256 amount = balanceOf(account_);
         _balances[account_] = 0;
         _balances[commissionRecipient] += amount;
-        emit BlocklistedAccountWasNullified(account_, amount);
+        emit BlocklistedAccountNullified(account_, amount);
     }
 
     /// @inheritdoc IJooby
@@ -103,7 +103,7 @@ contract Jooby is IJooby, AccessControl {
             revert ForbiddenToMintTokens();
         }
         if (_totalSupply + amount_ > MAXIMUM_SUPPLY) {
-            revert MaximumSupplyWasExceeded();
+            revert MaximumSupplyExceeded();
         }
         _totalSupply += amount_;
         unchecked {
@@ -118,7 +118,7 @@ contract Jooby is IJooby, AccessControl {
             revert ForbiddenToBurnTokens();
         }
         if (percentage_ > MAXIMUM_BURN_PERCENTAGE) {
-            revert MaximumBurnPercentageWasExceeded();
+            revert MaximumBurnPercentageExceeded();
         }
         uint256 currentTotalSupply = _totalSupply;
         uint256 nonBurnableSupply = _totalSupplyOfBurnProtectedAccounts();
@@ -216,7 +216,7 @@ contract Jooby is IJooby, AccessControl {
             revert ForbiddenToUpdatePurchaseProtectionPeriod();
         }
         purchaseProtectionPeriod = purchaseProtectionPeriod_;
-        emit PurchaseProtectionPeriodWasUpdated(purchaseProtectionPeriod_);
+        emit PurchaseProtectionPeriodUpdated(purchaseProtectionPeriod_);
     }
 
     /// @inheritdoc IJooby
@@ -225,7 +225,7 @@ contract Jooby is IJooby, AccessControl {
             revert ForbiddenToUpdateSaleProtectionPeriod();
         }
         saleProtectionPeriod = saleProtectionPeriod_;
-        emit SaleProtectionPeriodWasUpdated(saleProtectionPeriod_);
+        emit SaleProtectionPeriodUpdated(saleProtectionPeriod_);
     }
 
     /// @inheritdoc IJooby
@@ -237,7 +237,7 @@ contract Jooby is IJooby, AccessControl {
         removeBurnProtectedAccount(currentCommissionRecipient);
         commissionRecipient = commissionRecipient_;
         addBurnProtectedAccount(commissionRecipient_);
-        emit CommissionRecipientWasUpdated(commissionRecipient_);
+        emit CommissionRecipientUpdated(commissionRecipient_);
     }
 
     /// @inheritdoc IJooby
@@ -251,16 +251,16 @@ contract Jooby is IJooby, AccessControl {
             revert ForbiddenToUpdateMaximumPurchaseAmountDuringProtectionPeriod();
         }
         maximumPurchaseAmountDuringProtectionPeriod = maximumPurchaseAmountDuringProtectionPeriod_;
-        emit MaximumPurchaseAmountDuringProtectionPeriodWasUpdated(maximumPurchaseAmountDuringProtectionPeriod_);
+        emit MaximumPurchaseAmountDuringProtectionPeriodUpdated(maximumPurchaseAmountDuringProtectionPeriod_);
     }
 
     /// @inheritdoc IJooby
     function updatePercentageOfSalesCommission(uint256 percentageOfSalesCommission_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (percentageOfSalesCommission_ > MAXIMUM_PERCENTAGE_OF_SALES_COMMISSION) {
-            revert MaximumPercentageOfSalesCommissionWasExceeded();
+            revert MaximumPercentageOfSalesCommissionExceeded();
         }
         percentageOfSalesCommission = percentageOfSalesCommission_;
-        emit PercentageOfSalesCommissionWasUpdated(percentageOfSalesCommission_);
+        emit PercentageOfSalesCommissionUpdated(percentageOfSalesCommission_);
     }
 
     /// @inheritdoc IERC20
@@ -386,10 +386,10 @@ contract Jooby is IJooby, AccessControl {
             uint256 timeElapsed = block.timestamp - tradingEnabledTimestamp;
             if (timeElapsed < purchaseProtectionPeriod && _liquidityPools.contains(from_)) {
                 if (_whitelistedAccounts.contains(tx.origin)) {
-                    if (!isPurchaseWasMadeDuringProtectionPeriodByAccount[tx.origin]) {
+                    if (!isPurchaseMadeDuringProtectionPeriodByAccount[tx.origin]) {
                         availableAmountToPurchaseDuringProtectionPeriodByAccount[tx.origin] 
                             = maximumPurchaseAmountDuringProtectionPeriod - amount_;
-                        isPurchaseWasMadeDuringProtectionPeriodByAccount[tx.origin] = true;
+                        isPurchaseMadeDuringProtectionPeriodByAccount[tx.origin] = true;
                     } else {
                         availableAmountToPurchaseDuringProtectionPeriodByAccount[tx.origin] -= amount_;
                     }

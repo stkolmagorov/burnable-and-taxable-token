@@ -4,15 +4,15 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 interface IJooby is IERC20Metadata {
-    error MaximumSupplyWasNotMinted();
+    error MaximumSupplyNotMinted();
     error EmptySetOfLiquidityPools();
     error EmptySetOfWhitelistedAccounts();
-    error TradingWasAlreadyEnabled();
+    error TradingAlreadyEnabled();
     error ZeroAddressEntry();
     error ForbiddenToMintTokens();
-    error MaximumSupplyWasExceeded();
+    error MaximumSupplyExceeded();
     error ForbiddenToBurnTokens();
-    error MaximumBurnPercentageWasExceeded();
+    error MaximumBurnPercentageExceeded();
     error AlreadyInLiquidityPoolsSet(address account);
     error NotFoundInLiquidityPoolsSet(address account);
     error AlreadyInWhitelistedAccountsSet(address account);
@@ -25,7 +25,7 @@ interface IJooby is IERC20Metadata {
     error ForbiddenToUpdateSaleProtectionPeriod();
     error InvalidCommissionRecipient();
     error ForbiddenToUpdateMaximumPurchaseAmountDuringProtectionPeriod();
-    error MaximumPercentageOfSalesCommissionWasExceeded();
+    error MaximumPercentageOfSalesCommissionExceeded();
     error AlreadyInBurnProtectedAccountsSet();
     error NotFoundInBurnProtectedAccountsSet();
     error Blocklisted();
@@ -33,8 +33,8 @@ interface IJooby is IERC20Metadata {
     error ForbiddenToSaleTokens();
 
     event TradingEnabled(uint256 indexed tradingEnabledTimestamp);
-    event AccumulatedCommissionWasWithdrawn(uint256 indexed commissionAmount);
-    event BlocklistedAccountWasNullified(address indexed account, uint256 indexed amount);
+    event AccumulatedCommissionWithdrawn(uint256 indexed commissionAmount);
+    event BlocklistedAccountNullified(address indexed account, uint256 indexed amount);
     event LiquidityPoolsAdded(address[] indexed liquidityPools);
     event LiquidityPoolsRemoved(address[] indexed liquidityPools);
     event WhitelistedAccountsAdded(address[] indexed accounts);
@@ -43,11 +43,11 @@ interface IJooby is IERC20Metadata {
     event BlocklistedAccountsRemoved(address[] indexed accounts);
     event CommissionExemptAccountsAdded(address[] indexed accounts);
     event CommissionExemptAccountsRemoved(address[] indexed accounts);
-    event PurchaseProtectionPeriodWasUpdated(uint256 indexed newPurchaseProtectionPeriod);
-    event SaleProtectionPeriodWasUpdated(uint256 indexed newSaleProtectionPeriod);
-    event CommissionRecipientWasUpdated(address indexed newCommissionRecipient);
-    event MaximumPurchaseAmountDuringProtectionPeriodWasUpdated(uint256 indexed newMaximumPurchaseAmountDuringProtectionPeriod);
-    event PercentageOfSalesCommissionWasUpdated(uint256 indexed newPercentageOfSalesCommission);
+    event PurchaseProtectionPeriodUpdated(uint256 indexed newPurchaseProtectionPeriod);
+    event SaleProtectionPeriodUpdated(uint256 indexed newSaleProtectionPeriod);
+    event CommissionRecipientUpdated(address indexed newCommissionRecipient);
+    event MaximumPurchaseAmountDuringProtectionPeriodUpdated(uint256 indexed newMaximumPurchaseAmountDuringProtectionPeriod);
+    event PercentageOfSalesCommissionUpdated(uint256 indexed newPercentageOfSalesCommission);
     event BurnProtectedAccountAdded(address indexed account);
     event BurnProtectedAccountRemoved(address indexed account);
 
